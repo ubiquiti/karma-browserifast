@@ -76,7 +76,7 @@ function karmaBrowserifast() {
         // See if there config.browserify.tmpDir is specified.
         // If it isn't, fall back to OS tmpDir.
         var tmpDir;
-        if (config.browserify.tmpDir) {
+        if (config.browserify && config.browserify.tmpDir) {
             tmpDir = path.join(config.basePath, config.browserify.tmpDir);
             mkdirp.sync(tmpDir);
         } else {
@@ -138,7 +138,8 @@ function karmaBrowserifast() {
             var options = {
               entries: paths,
               extensions: bc.extensions,
-              resolve: bc.resolve
+              resolve: bc.resolve,
+              debug: bc.debug
             };
             if (bc.paths) {
               options.paths = bc.paths;
@@ -164,7 +165,7 @@ function karmaBrowserifast() {
             log.debug("Browserify bundle");
             var start = new Date();
 
-            bundle.bundle({ debug: bc.debug }, function (err, content) {
+            bundle.bundle(function (err, content) {
                 if (err) {
                     log.error("Error while bundling!");
                     log.error(err);
@@ -172,12 +173,12 @@ function karmaBrowserifast() {
                 }
 
                 if(bc.debug) {
-                    var map = convert.fromSource(content);
+                    var map = convert.fromSource(String(content));
                     file.sourceMap = map.sourcemap;
                 }
 
-                log.info("Browserified in", (new Date() - start) + "ms,", Math.floor(content.length / 1024) + "kB");
-                done(content);
+                log.info("Browserified in", (new Date() - start) + "ms,", Math.floor(String(content).length / 1024) + "kB");
+                done(String(content));
             });
         };
     }
