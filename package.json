@@ -5,6 +5,7 @@
         "karma-plugin",
         "browserify"
     ],
+    "private": true,
     "version": "0.7.0",
     "authors": [{
         "name": "Jostein Holje",
